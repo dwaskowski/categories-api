@@ -3,18 +3,11 @@
 namespace Api\Category;
 
 use Application\UuidHelper;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Exception\PropelException;
 
 class CategoryModel
 {
-    /**
-     * @return \CategoryQuery
-     */
-    protected function getCategoryQuery(): \CategoryQuery
-    {
-        return \CategoryQuery::create();
-    }
-
     /**
      * @param string $uuidOrSlug
      * @return \Category|null
@@ -41,9 +34,7 @@ class CategoryModel
             : null;
         $isVisible = $requestParameters[CategorySettingInterface::PARAMETER_IS_VISIBLE] ?? false;
 
-        $categoryEntity = $this->getCategoryQuery()
-            ->filterByName($requestParameters[CategorySettingInterface::PARAMETER_NAME])
-            ->findOneOrCreate();
+        $categoryEntity = $this->findOrCreateCategoryByName($requestParameters[CategorySettingInterface::PARAMETER_NAME]);
 
         if (!$categoryEntity->isNew()) {
             return null;
@@ -65,7 +56,7 @@ class CategoryModel
 
     /**
      * @param string $uuidOrSlug
-     * @return \Category[]|null|\Propel\Runtime\Collection\ObjectCollection
+     * @return \Category[]|null|ObjectCollection
      * @throws PropelException
      */
     public function getCategoryChildren(string $uuidOrSlug)
@@ -111,5 +102,24 @@ class CategoryModel
         $categoryEntity->save();
 
         return true;
+    }
+
+    /**
+     * @return \CategoryQuery
+     */
+    protected function getCategoryQuery(): \CategoryQuery
+    {
+        return \CategoryQuery::create();
+    }
+
+    /**
+     * @param string $name
+     * @return \Category
+     */
+    protected function findOrCreateCategoryByName(string $name): \Category
+    {
+        return $this->getCategoryQuery()
+            ->filterByName($name)
+            ->findOneOrCreate();
     }
 }
