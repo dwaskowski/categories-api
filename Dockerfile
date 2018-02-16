@@ -6,6 +6,8 @@ RUN rm /etc/nginx/sites-available/default \
     && rm /etc/nginx/sites-enabled/default
 COPY ./bootstarap/categories_api.conf /etc/nginx/conf.d/categories_api.conf
 
+RUN apt-get install php7.2-curl
+
 COPY ./bootstarap/bootstrap.sh /bootstrap.sh
 RUN chmod +x /bootstrap.sh
 
