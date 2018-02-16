@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<config>
+    <propel>
+        <database>
+            <connections>
+                <connection id="categories_api">
+                    <adapter>mysql</adapter>
+                    <dsn>mysql:host=127.0.0.1;port=3306;dbname=categories_api</dsn>
+                    <user>root</user>
+                    <password>root</password>
+                    <settings>
+                        <charset>utf8</charset>
+                    </settings>
+                </connection>
+            </connections>
+        </database>
+    </propel>
+</config>

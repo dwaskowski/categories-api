@@ -1,0 +1,27 @@
+<database name="categories_api" defaultIdMethod="native"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://xsd.propelorm.org/1.6/database.xsd"
+          namespace=""
+>
+    <behavior name="timestampable"/>
+    <table name="category" phpName="Category">
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="uuid" type="varchar" size="255" required="true" />
+        <column name="name" type="varchar" size="255" required="true" />
+        <column name="slug" type="varchar" size="255" required="true" />
+        <column name="parentCategoryId" type="integer" required="false" default="NULL"/>
+        <column name="isVisible" type="boolean" required="true" default="false" />
+
+        <unique>
+            <unique-column name="uuid"/>
+        </unique>
+
+        <unique>
+            <unique-column name="slug"/>
+        </unique>
+
+        <foreign-key foreignTable="category">
+            <reference local="parentCategoryId" foreign="id"/>
+        </foreign-key>
+    </table>
+</database>

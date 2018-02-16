@@ -1,0 +1,9 @@
+class_name: IntegrationTester
+modules:
+    enabled:
+        - \Helper\Integration
+        - Asserts
+        - REST:
+            url: http://localhost:8181
+            depends: PhpBrowser
+            part: Json

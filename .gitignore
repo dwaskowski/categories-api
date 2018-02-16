@@ -1,0 +1,6 @@
+.idea
+.DS_Store
+/categories_api/vendor/
+/categories_api/logs/*
+!/categories_api/logs/README.md
+/categories_api/tests/_output
