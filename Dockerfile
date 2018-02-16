@@ -10,13 +10,5 @@ COPY ./bootstarap/bootstrap.sh /bootstrap.sh
 RUN chmod +x /bootstrap.sh
 
 COPY ./categories_api /srv/www/categories_api
-RUN chown -R www-data:www-data /srv/www/categories_api
-
-USER www-data
-RUN cd /srv/www/categories_api \
-    && composer install \
-    && cd propel \
-    && ../vendor/bin/propel sql:build \
-    && ../vendor/bin/propel sql:insert
 
 CMD ["/bootstrap.sh"]
