@@ -7,7 +7,7 @@
                     <adapter>mysql</adapter>
                     <dsn>mysql:host=127.0.0.1;port=3306;dbname=categories_api</dsn>
                     <user>root</user>
-                    <password>root</password>
+                    <password></password>
                     <settings>
                         <charset>utf8</charset>
                     </settings>

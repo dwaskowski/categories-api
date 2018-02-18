@@ -17,7 +17,7 @@ return [
             'host' => '127.0.0.1',  //Your Database Hostname
             'port' => '3306',   //Database Port
             'username' => 'root',   //Database Username
-            'password' => 'root',   //Database Password
+            'password' => '',   //Database Password
             'name' => 'categories_api',  //Database name
             'charset' => 'utf8' //Database charset
         ],
