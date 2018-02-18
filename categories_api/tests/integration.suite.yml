@@ -3,7 +3,8 @@ modules:
     enabled:
         - \Helper\Integration
         - Asserts
+        - Db
         - REST:
-            url: http://localhost:8181
+            url: http://localhost
             depends: PhpBrowser
             part: Json
