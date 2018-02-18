@@ -6,7 +6,7 @@ chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
 /etc/init.d/mysql restart && /etc/init.d/mysql status
 
 
-#chown -R www-data:www-data /srv/www/categories_api
+chown -R www-data:www-data /srv/www/categories_api
 
 cd /srv/www/categories_api \
     && sudo -u www-data composer install \
