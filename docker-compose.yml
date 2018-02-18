@@ -2,6 +2,6 @@ slim:
   build: .
   ports:
     - "8181:80"
-#  volumes:
-#    - ./categories_api:/srv/www/categories_api
+  volumes:
+    - ./categories_api:/srv/www/categories_api
   tty: true

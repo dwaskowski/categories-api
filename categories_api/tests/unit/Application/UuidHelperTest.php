@@ -12,7 +12,10 @@ class UuidHelperTest extends Unit
      */
     public function testIsV4($uuid, $assert)
     {
-        $this->assertEquals(UuidHelper::isV4($uuid), $assert);
+        $checkUuid = UuidHelper::isV4($uuid);
+
+        $this->assertEquals($checkUuid, $assert);
+        $this->assertInternalType('bool', $checkUuid);
     }
 
     public function getV4Data()
@@ -47,20 +50,26 @@ class UuidHelperTest extends Unit
     }
 
     public function testGetRemoteAddress() {
-        $this->assertInternalType('string', UuidHelper::getRemoteAddress());
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.1';
+        $urlRemoteAddress = UuidHelper::getRemoteAddress();
+        $this->assertInternalType('string', $urlRemoteAddress);
+        $this->assertEquals('127.0.0.1', $urlRemoteAddress);
+        unset($_SERVER['HTTP_X_FORWARDED_FOR']);
 
-        $ipList = '';
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ipList = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            $ipList = array_pop($ipList);
-        } elseif (isset($_SERVER['REMOTE_IP'])) {
-            $ipList = explode(',', $_SERVER['REMOTE_IP']);
-            $ipList = array_pop($ipList);
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            $ipList = explode(',', $_SERVER['REMOTE_ADDR']);
-            $ipList = array_pop($ipList);
-        }
+        $_SERVER['REMOTE_IP'] = '127.0.0.1';
+        $urlRemoteAddress = UuidHelper::getRemoteAddress();
+        $this->assertInternalType('string', $urlRemoteAddress);
+        $this->assertEquals('127.0.0.1', $urlRemoteAddress);
+        unset($_SERVER['REMOTE_IP']);
 
-        $this->assertEquals(UuidHelper::getRemoteAddress(), $ipList);
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $urlRemoteAddress = UuidHelper::getRemoteAddress();
+        $this->assertInternalType('string', $urlRemoteAddress);
+        $this->assertEquals('127.0.0.1', $urlRemoteAddress);
+        unset($_SERVER['REMOTE_ADDR']);
+
+        $urlRemoteAddress = UuidHelper::getRemoteAddress();
+        $this->assertInternalType('string', $urlRemoteAddress);
+        $this->assertEquals('', $urlRemoteAddress);
     }
 }
