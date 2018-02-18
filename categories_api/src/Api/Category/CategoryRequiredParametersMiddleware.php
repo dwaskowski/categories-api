@@ -16,7 +16,18 @@ class CategoryRequiredParametersMiddleware
      */
     public function __construct(array $requiredParameters)
     {
+        $this->setParameters($requiredParameters);
+    }
+
+    /**
+     * @param array $requiredParameters
+     * @return CategoryRequiredParametersMiddleware
+     */
+    protected function setParameters(array $requiredParameters): CategoryRequiredParametersMiddleware
+    {
         $this->requiredParameters = $requiredParameters;
+
+        return $this;
     }
 
     /**

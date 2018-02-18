@@ -22,8 +22,30 @@ class CategoryCheckUuidMiddleware
      */
     public function __construct(array $requiredAttributes = [], array $requiredParameters = [])
     {
+        $this->setAttributes($requiredAttributes)
+            ->setParameters($requiredParameters);
+    }
+
+    /**
+     * @param array $requiredAttributes
+     * @return CategoryCheckUuidMiddleware
+     */
+    protected function setAttributes(array $requiredAttributes = []): CategoryCheckUuidMiddleware
+    {
         $this->requiredAttributes = $requiredAttributes;
+
+        return $this;
+    }
+
+    /**
+     * @param array $requiredParameters
+     * @return CategoryCheckUuidMiddleware
+     */
+    protected function setParameters(array $requiredParameters = []): CategoryCheckUuidMiddleware
+    {
         $this->requiredParameters = $requiredParameters;
+
+        return $this;
     }
 
     /**

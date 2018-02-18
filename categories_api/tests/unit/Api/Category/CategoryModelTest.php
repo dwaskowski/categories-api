@@ -10,6 +10,30 @@ use Propel\Runtime\Exception\PropelException;
 
 class CategoryModelTest extends Unit
 {
+    public function testGetCategoryByUuidOrSlug()
+    {
+        $categoryModelMock = Stub::make(
+            CategoryModel::class,
+            [
+                'getCategoryQuery' => function() {
+                    $categoryQueryMock = Stub::make(
+                        \CategoryQuery::class,
+                        [
+                            'findOne' => new \Category()
+                        ]
+                    );
+
+                    return $categoryQueryMock;
+                }
+            ]
+        );
+
+        /** @var \Category $result */
+        $result = $categoryModelMock->getCategoryByUuidOrSlug('uuid');
+
+        $this->assertInstanceOf(\Category::class, $result);
+    }
+
     public function testCreateCategoryIsNew()
     {
         $categoryModelMock = Stub::make(
@@ -20,7 +44,8 @@ class CategoryModelTest extends Unit
                     $categoryEntity->setName('TestCategory');
 
                     return $categoryEntity;
-                }
+                },
+                'getCategoryByUuidOrSlug' => new \Category()
             ]
         );
 
@@ -37,6 +62,23 @@ class CategoryModelTest extends Unit
         $this->assertEquals($result->getName(), 'TestCategory');
         $this->assertEquals($result->getSlug(), 'tc');
         $this->assertEquals($result->getIsvisible(), true);
+        $this->assertEquals($result->getParentcategoryid(), null);
+
+        /** @var \Category $result */
+        $result = $categoryModelMock->createCategory([
+            CategorySettingInterface::PARAMETER_UUID => 'uuid',
+            CategorySettingInterface::PARAMETER_NAME => 'TestCategory',
+            CategorySettingInterface::PARAMETER_SLUG => 'tc',
+            CategorySettingInterface::PARAMETER_IS_VISIBLE => true,
+            CategorySettingInterface::PARAMETER_PARENT_CATEGORY => 'uuid2'
+        ]);
+
+        $this->assertInstanceOf(\Category::class, $result);
+        $this->assertEquals($result->getUuid(), 'uuid');
+        $this->assertEquals($result->getName(), 'TestCategory');
+        $this->assertEquals($result->getSlug(), 'tc');
+        $this->assertEquals($result->getIsvisible(), true);
+        $this->assertInstanceOf(\Category::class, $result->getCategoryRelatedByParentcategoryid());
     }
 
     public function testCreateCategoryIsNotNew()
@@ -85,16 +127,32 @@ class CategoryModelTest extends Unit
         $this->assertEquals($result, null);
     }
 
-    public function testGetForNotExistCategoryChildren()
+    public function testGetCategoryChildren()
     {
         $categoryModelMock = Stub::make(CategoryModel::class, ['getCategoryByUuidOrSlug' => null]);
 
         $result = $categoryModelMock->getCategoryChildren('uuid');
 
         $this->assertEquals($result, null);
+
+        $categoryModelMock = Stub::make(
+            CategoryModel::class,
+            [
+                'getCategoryByUuidOrSlug' => new \Category(),
+                'getCategoryQuery' => function () {
+                    $categoryQuery = Stub::make(\CategoryQuery::class, ['find' => new \Category()]);
+
+                    return $categoryQuery;
+                }
+            ]
+        );
+
+        $categoryEntity = $categoryModelMock->getCategoryChildren('uuid');
+
+        $this->assertInstanceOf(\Category::class, $categoryEntity);
     }
 
-    public function testUpdateCategoryIsModifiedPart()
+    public function testUpdateCategoryPart()
     {
         $categoryModelMock = Stub::make(
             CategoryModel::class,
@@ -114,20 +172,6 @@ class CategoryModelTest extends Unit
         );
 
         $this->assertEquals(true, $result);
-    }
-
-    public function testUpdateCategoryIsNotModifiedPart()
-    {
-        $categoryModelMock = Stub::make(
-            CategoryModel::class,
-            [
-                'getCategoryByUuidOrSlug' => function () {
-                    $categoryEntityMock = Stub::make(\Category::class, ['save' => true]);
-
-                    return $categoryEntityMock;
-                }
-            ]
-        );
 
         /** @var \Category $result */
         $result = $categoryModelMock->updateCategoryPart(
