@@ -28,7 +28,7 @@ class CategoryControler extends BaseController
     {
         $requestParameters = $this->getRequest()->getParsedBody();
 
-        $categoryEntity = $this->categoryModel->createCategory($requestParameters);
+        $categoryEntity = $this->getCategoryModel()->createCategory($requestParameters);
         if ($categoryEntity === null) {
             return $this->getResponse()->withJson(MessageInterface::ERROR_CATEGORY_EXIST, 409);
         }
@@ -43,7 +43,7 @@ class CategoryControler extends BaseController
     {
         $uuidOrSlug = $this->getRequest()->getAttribute(CategorySettingInterface::UUID_OR_SLUG);
 
-        $categoryEntity = $this->categoryModel->getCategoryByUuidOrSlug($uuidOrSlug);
+        $categoryEntity = $this->getCategoryModel()->getCategoryByUuidOrSlug($uuidOrSlug);
         if ($categoryEntity === null) {
             return $this->getResponse()->withJson(MessageInterface::ERROR_CATEGORY_NOT_FOUND, 404);
         }
@@ -58,7 +58,7 @@ class CategoryControler extends BaseController
     public function getChildrenForCategory(): Response
     {
         $uuidOrSlug = $this->getRequest()->getAttribute(CategorySettingInterface::UUID_OR_SLUG);
-        $categoryEntities = $this->categoryModel->getCategoryChildren($uuidOrSlug);
+        $categoryEntities = $this->getCategoryModel()->getCategoryChildren($uuidOrSlug);
 
         if ($categoryEntities === null) {
             return $this->getResponse()->withJson(MessageInterface::ERROR_CATEGORY_NOT_FOUND, 404);
@@ -81,12 +81,20 @@ class CategoryControler extends BaseController
                 = (bool)$this->getRequest()->getHeader(CategorySettingInterface::PARAMETER_IS_VISIBLE);
         }
 
-        $updateCategory = $this->categoryModel->updateCategoryPart($uuidOrSlug, $parts);
+        $updateCategory = $this->getCategoryModel()->updateCategoryPart($uuidOrSlug, $parts);
 
         if ($updateCategory === null) {
             return $this->getResponse()->withJson(MessageInterface::ERROR_CATEGORY_NOT_FOUND, 404);
         }
 
         return $this->getResponse()->withJson(MessageInterface::SUCCESS_OPERATION, 200);
+    }
+
+    /**
+     * @return CategoryModel
+     */
+    protected function getCategoryModel(): CategoryModel
+    {
+        return $this->categoryModel;
     }
 }

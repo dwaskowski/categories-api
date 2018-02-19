@@ -6,7 +6,6 @@ use Api\Category\CategoryCheckUuidMiddleware;
 use Api\Category\CategorySettingInterface;
 use Api\Category\MessageInterface;
 use Codeception\Test\Unit;
-use Codeception\Util\Stub;
 use Slim\Http\Environment;
 use Slim\Http\Request;
 use Slim\Http\Response;
