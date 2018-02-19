@@ -11,15 +11,13 @@ use Slim\Http\Response;
 
 class CategoryControllerTest extends Unit
 {
-    public function testCreateCategory()
+    /**
+     * @dataProvider getCreateCategoryData
+     */
+    public function testCreateCategory($categoryEntity, $statusCode)
     {
-        $baseControler = Stub::make(CategoryControler::class, ['getCategoryModel' => function () {
-            return Stub::make(
-                CategoryModel::class,
-                [
-                    'createCategory' => new \Category()
-                ]
-            );
+        $baseControler = Stub::make(CategoryControler::class, ['getCategoryModel' => function () use ($categoryEntity) {
+            return  Stub::make(CategoryModel::class, ['createCategory' => $categoryEntity]);
         }]);
 
         $baseControler->setResponse(new Response());
@@ -28,23 +26,40 @@ class CategoryControllerTest extends Unit
         /** @var Response $result */
         $result = $baseControler->createCategory();
 
-        $this->assertEquals(201, $result->getStatusCode());
+        $this->assertEquals($statusCode, $result->getStatusCode());
+    }
 
-        $baseControler = Stub::make(CategoryControler::class, ['getCategoryModel' => function () {
-            return Stub::make(
-                CategoryModel::class,
-                [
-                    'createCategory' => null
-                ]
-            );
+    public function getCreateCategoryData()
+    {
+        return [
+            [new \Category(), 201],
+            [null, 409]
+        ];
+    }
+
+    /**
+     * @dataProvider getGetCategoryData
+     */
+    public function testGetCategory($categoryEntity, $statusCode)
+    {
+        $baseControler = Stub::make(CategoryControler::class, ['getCategoryModel' => function () use ($categoryEntity) {
+            return  Stub::make(CategoryModel::class, ['getCategoryByUuidOrSlug' => $categoryEntity]);
         }]);
 
         $baseControler->setResponse(new Response());
-        $baseControler->setRequest(Stub::make(Request::class, ['getParsedBody' => []]));
+        $baseControler->setRequest(Stub::make(Request::class, ['getAttribute' => '']));
 
         /** @var Response $result */
-        $result = $baseControler->createCategory();
+        $result = $baseControler->getCategory();
 
-        $this->assertEquals(409, $result->getStatusCode());
+        $this->assertEquals($statusCode, $result->getStatusCode());
+    }
+
+    public function getGetCategoryData()
+    {
+        return [
+            [new \Category(), 200],
+            [null, 404]
+        ];
     }
 }
